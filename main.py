@@ -1,5 +1,6 @@
+#!/usr/bin/env python 
+
 from server import TCPServer
-import time
 import argparse
 from audio import AudioAnalyzer, all_audio_devices
 
