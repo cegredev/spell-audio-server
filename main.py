@@ -9,6 +9,7 @@ def main():
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
+    parser.add_argument("-s", "--single-word", action="store_true", help="If set the server will send messages for every word it receives")
     parser.add_argument(
         "-l", "--language", type=str, help="language model; e.g. en-us, de, ...; default is en-us")
     parser.add_argument(
@@ -23,7 +24,7 @@ def main():
         print(all_audio_devices())
         return
 
-    analyzer = AudioAnalyzer(args.device, args.language)
+    analyzer = AudioAnalyzer(args.device, args.language, args.single_word)
 
     server = TCPServer()
 

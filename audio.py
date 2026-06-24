@@ -14,7 +14,7 @@ def all_audio_devices():
 
 class AudioAnalyzer:
 
-    def __init__(self, device: int | None, lang: str | None):
+    def __init__(self, device: int | None, lang: str | None, single_word: bool = False):
         if device is None:
             self._device = int(sd.query_devices("default")["index"])
         else:
@@ -27,6 +27,9 @@ class AudioAnalyzer:
             self._model = Model(lang="en-us")
         else:
             self._model = Model(lang=lang)
+
+        self._single_word = single_word
+        self._last_words = []
 
         self._q = queue.Queue()
 
@@ -44,9 +47,40 @@ class AudioAnalyzer:
 
             while True:
                 data = self._q.get()
-                if rec.AcceptWaveform(data):
-                    result = rec.FinalResult()
-                    data = json.loads(result)
-                    text: str = data.get("text", "")
+                
+                wf = rec.AcceptWaveform(data)
 
-                    yield text
+                if wf:
+                    self._last_words = []
+                    result = rec.Result()
+
+                    if not self._single_word:
+                        j = json.loads(result)
+                        text: str = j.get("text", "")
+
+                        if text == "":
+                            continue
+
+                        yield text
+                elif self._single_word:
+                    result = rec.PartialResult()
+                    j = json.loads(result)
+                    text: str = j.get("partial", "")    
+
+                    initial_words = text.split(" ")
+                    words = [w for w in initial_words]
+
+                    for word in self._last_words:
+                        if len(words) == 0:
+                            break
+
+                        if word == words[0]:
+                            words.pop(0)
+
+                    for word in words:
+                        if word == "":
+                            continue
+                        
+                        yield word
+
+                    self._last_words = initial_words
