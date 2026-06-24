@@ -14,16 +14,14 @@ def all_audio_devices():
 
 class AudioAnalyzer:
 
-    def __init__(self, device: int | None, samplerate: int | None, lang: str | None):
+    def __init__(self, device: int | None, lang: str | None):
         if device is None:
             self._device = int(sd.query_devices("default")["index"])
         else:
             self._device = device
 
-        if samplerate is None:
-            device_info = sd.query_devices(self._device, "input")
-
-            self._samplerate = int(device_info["default_samplerate"])
+        device_info = sd.query_devices(self._device, "input")
+        self._samplerate = int(device_info["default_samplerate"])
             
         if lang is None:
             self._model = Model(lang="en-us")
