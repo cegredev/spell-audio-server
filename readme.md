@@ -22,3 +22,7 @@
 
 `OSError: PortAudio library not found`
 --> install libportaudio2 (ubuntu) / portaudio (fedora)
+
+## How to build
+
+Run `pyinstaller main.spec`
