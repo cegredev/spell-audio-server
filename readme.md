@@ -25,4 +25,4 @@
 
 ## How to build
 
-Run `pyinstaller main.spec`
+Run `pyinstaller main.spec` or `python -m PyInstaller main.spec`
