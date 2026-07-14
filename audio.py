@@ -16,7 +16,11 @@ class AudioAnalyzer:
 
     def __init__(self, device: int | None, lang: str | None, single_word: bool = True):
         if device is None:
-            self._device = int(sd.query_devices("default")["index"])
+            try:
+                self._device = int(sd.query_devices("default")["index"])
+            except:
+                print("There is no default device! Please identify yours using --list-devices and then use it with --device X")
+                raise
         else:
             self._device = device
 
